@@ -1,6 +1,9 @@
 # Vitrealis
 Discord/Github Connection Utils
 
+* Create Webhooks
+* View Repository insights
+
 ## Initialize your Account
 Account Syncs are currently handled via AUTH-Tokens [(How do we use your Data?)](#privacy).  
 Connect to your Account: `v!init key`. The Bot will dm you, asking for your API-Token. This is a One-time-setup.  
