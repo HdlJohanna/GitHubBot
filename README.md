@@ -1,5 +1,5 @@
 # Vitrealis
-Discord/Github Sync Utils
+Discord/Github Connection Utils
 
 ## Initialize your Account
 Account Syncs are currently handled via AUTH-Tokens [(How do we use your Data?)](#privacy).  
