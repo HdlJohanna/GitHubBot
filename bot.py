@@ -54,7 +54,7 @@ logger = SysLog()
 @client.event
 async def on_ready():
     logger.info(f'Logged in as {client.user}')
-    await client.change_presence(activity=nextcord.Game(name="gh help"))
+    await client.change_presence(activity=nextcord.Game(name="People type `gh help`"))
 
 @client.group(name="org")
 async def _org(ctx):
@@ -68,8 +68,8 @@ async def hook_create(ctx,org,url="https://webhook.site"):
     if not str(ctx.author.id) in config:
         return await ctx.send(":x: You have to sync your Profile to a GitHub account: `v!init key`")
     git = github.Github(fernet.decrypt(config[str(ctx.author.id)].encode()).decode('utf-8'))
-    orga = git.get_organization(org)
-    EVENTS = ["push", "pull_request"]
+    orga = git.get_organization(org)    
+    EVENTS = ["push", "pull_request","issues","issue_comment","create","member","gollum","watch","release","delete","fork","pull_request_review_comment"]
     logger.info(f'Webhook ORG {org} create')
     orga.create_hook("web",{        
         "url": url,
@@ -181,6 +181,37 @@ async def on_error(ctx,ex):
     logger.error(f'{ex}')
     await ctx.send(f':x: Error: %s' % ex)
 
+@repo.command()
+async def pull(ctx,reponame,title,base,head,*,body):
+    fernet = Fernet(open("key.key",'rb').read())
+    with open("config.json","r") as f:
+        config = json.load(f)
+    if not str(ctx.author.id) in config:
+        return await ctx.send(":x: You haven't synced your Profile to a GitHub account yet: `gh init key`")
+    git = github.Github(fernet.decrypt(config[str(ctx.author.id)].encode()).decode('utf-8'))
+    
+    repo = git.get_repo(reponame)
+    pull = repo.create_pull(title,body,base,head)
+    logger.info(f"PULLED {ctx.author.name}")
+    embed = nextcord.Embed(title="Pull done!",description=f"You pulled into {pull.title}. Now we wait...",color=nextcord.Color.dark_magenta())
+    await ctx.send(embed=embed)
+
+@repo.command(aliases=["deletefile","dfile"])
+async def df(ctx,reponame,path,*,message):
+    fernet = Fernet(open("key.key",'rb').read())
+    with open("config.json","r") as f:
+        config = json.load(f)
+    if not str(ctx.author.id) in config:
+        return await ctx.send(":x: You haven't synced your Profile to a GitHub account yet: `gh init key`")
+    git = github.Github(fernet.decrypt(config[str(ctx.author.id)].encode()).decode('utf-8'))
+    
+    repo = git.get_repo(reponame)
+    repo.delete_file(path,message)
+    logger.info(f"DELETE {path} ({message})")
+    embed = nextcord.Embed(title=f"File Deleted!",description=f"{path} has been deleted successfully",color=nextcord.Color.dark_magenta())
+    await ctx.send(embed=embed)
+
+
 @client.group()
 async def init(ctx):
     ...
@@ -216,6 +247,7 @@ async def logs(ctx,repository,channel:nextcord.TextChannel,events=""):
     create_webhook(githook.url,*repository.split("/"),ctx.author.id)
     embed = nextcord.Embed(title='Webhook created!',color=nextcord.Color.dark_magenta(),description=f'A Webhook was created for {repository} by [{git.get_user().name}]({git.get_user().url})')
     await githook.send(embed=embed)
+
 
 ENDPOINT = "github"
 
@@ -298,5 +330,5 @@ async def key(ctx):
         json.dump(config,f)
     git = github.Github(message.content)
     user = git.get_user()
-    logger.info(f"Data created for {ctx.author.name} (LINK {user.login})")
+    logger.info(f"Data created for {ctx.author.name} (LINK {user.login}")
     await ctx.send(f'Logged in as {git.get_user().name}')
