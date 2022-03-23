@@ -22,7 +22,7 @@ async def hook_create(ctx,org,name="Vitrealis-Autopost",url="https://webhook.sit
     orga = git.get_organization(org)
     
     orga.create_hook("V",config={
-        'name':'Vitrealis',
+        'name':'web',
         'events':[
             "push",
             "pull_request",
