@@ -4,13 +4,32 @@ Discord/Github Connection Utils
 * Create Webhooks  
 * View Repository insights  
 * Manage Webhooks  
+* Create and view Issues  
+* View Organization Informations
 
 ## Initialize your Account
 Account Syncs are currently handled via AUTH-Tokens [(How do we use your Data?)](#privacy).  
 Connect to your Account: `gh init key`. The Bot will dm you, asking for your API-Token. This is a One-time-setup.  
 
-Connect a Webhook: `gh init logs user/repo #channel`.  
-This will create a Webhook pointing to https://github.zerotwo36.repl.co
+## Connect a Webhook: 
+`gh init logs user/repo #channel`.  
+This will create a Webhook pointing to https://github.zerotwo36.repl.co. You don't have to do anything else.  
+
+## Create an Issue
+`gh issues create user/repo "title" "Issue Body"`
+`gh issues find <ID>`
+
+## Organziation Management
+`gh org repo orgname reponame`  
+`gh org create_hook orgname reponame hook_url`
+
+## Repository Management
+`gh repo info user/repo`
+`gh repo collab add|remove username/repo user1 user2 user3 ...`
+`gh repo pull user/repo title base head pull-body`
+
+## Delete my Data!
+If you're uncomfortable with us having access to your Account, you can `gh init keyremove`.
 
 
 ### Privacy
@@ -109,3 +128,7 @@ Children's Information
 Another part of our priority is adding protection for children while using the internet. We encourage parents and guardians to observe, participate in, and/or monitor and guide their online activity.
 
 GitHubBot does not knowingly collect any Personal Identifiable Information from children under the age of 13. If you think that your child provided this kind of information on our website, we strongly encourage you to contact us immediately and we will do our best efforts to promptly remove such information from our records.
+
+Always read this Document
+----------
+Using `gh privacy`, you can always read this Privacy Document again
